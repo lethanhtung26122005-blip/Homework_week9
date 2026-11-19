@@ -1,0 +1,85 @@
+// ===== Product: interface =====
+interface Button {
+    void render();
+}
+
+interface Checkbox {
+    void render();
+}
+// ===== Dòng sản phẩm Windows =====
+class WindowsButton implements Button {
+    @Override
+    public void render() {
+        System.out.println("Ve Button kieu Windows");
+    }
+}
+class WindowsCheckbox implements Checkbox {
+    @Override
+    public void render() {
+        System.out.println("Ve Checkbox kieu Windows");
+    }
+}
+// ===== Dòng sản phẩm Mac =====
+class MacButton implements Button {
+    @Override
+    public void render() {
+        System.out.println("Ve Button kieu Mac");
+    }
+}
+class MacCheckbox implements Checkbox {
+    @Override
+    public void render() {
+        System.out.println("Ve Checkbox kieu Mac");
+    }
+}
+// ===== Abstract Factory =====
+interface UIFactory {
+    Button createButton();
+    Checkbox createCheckbox();
+}
+// ===== Concrete Factory =====
+class WindowsFactory implements UIFactory {
+    @Override
+    public Button createButton() {
+        return new WindowsButton();
+    }
+    @Override
+    public Checkbox createCheckbox() {
+        return new WindowsCheckbox();
+    }
+}
+class MacFactory implements UIFactory {
+    @Override
+    public Button createButton() {
+        return new MacButton();
+    }
+    @Override
+    public Checkbox createCheckbox() {
+        return new MacCheckbox();
+    }
+}
+// ===== Chương trình chính =====
+public class Main {
+    // Chọn factory theo cấu hình
+    static UIFactory getFactory(String config) {
+        switch (config.toLowerCase()) {
+            case "win":
+                return new WindowsFactory();
+            case "mac":
+                return new MacFactory();
+            default:
+                throw new IllegalArgumentException(
+                    "Cau hinh khong hop le: " + config + " (dung \"win\" hoac \"mac\")");
+        }
+    }
+    public static void main(String[] args) {
+        // Nhận tham số cấu hình từ dòng lệnh, mặc định là "win"
+        String config = (args.length > 0) ? args[0] : "win";
+        UIFactory factory = getFactory(config);
+        // Client chỉ dùng interface, không biết đang là Windows hay Mac
+        Button button = factory.createButton();
+        Checkbox checkbox = factory.createCheckbox();
+        button.render();
+        checkbox.render();
+    }
+}
